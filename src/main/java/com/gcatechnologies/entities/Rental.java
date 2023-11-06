@@ -1,11 +1,18 @@
 package com.gcatechnologies.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "rental")
+@Getter @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Rental {
 
     @Id
@@ -20,6 +27,8 @@ public class Rental {
 
     private Double valueRental;
 
+    private String vehicle; // OBJECTO
+
     @Column(name = "date_start")
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime dateStart;
@@ -28,7 +37,8 @@ public class Rental {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime dateFinalized;
 
-    private Vehicle vehicleEntity;
+    private String status;
+    //private Vehicle vehicleEntity;
 
     @ManyToOne()
     @JoinColumn(name = "method_payment_Id", insertable = false, updatable = false)

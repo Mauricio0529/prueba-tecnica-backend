@@ -32,6 +32,6 @@ public class Users {
     @OneToMany(mappedBy = "users", cascade = {CascadeType.ALL})
     private List<MethodPayment> methodPaymentList;
 
-    /*@OneToMany(mappedBy = "users", cascade = {CascadeType.ALL})
-    private List<Rental> rentalList;*/
+    @OneToMany(mappedBy = "users", cascade = {CascadeType.ALL})
+    private List<Rental> rentalList;
 }
