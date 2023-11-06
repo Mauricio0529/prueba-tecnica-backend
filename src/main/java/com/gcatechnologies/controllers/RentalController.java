@@ -2,6 +2,8 @@ package com.gcatechnologies.controllers;
 
 import com.gcatechnologies.constants.RentalApiConstants;
 import com.gcatechnologies.dto.RentalDto;
+import com.gcatechnologies.exceptions.ErrorResponse;
+import com.gcatechnologies.exceptions.MethodPaymentToUserNotExistException;
 import com.gcatechnologies.services.contracts.IRentalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -42,9 +44,16 @@ public class RentalController {
     }
 
     @PostMapping(RentalApiConstants.CREATE)
-    private ResponseEntity<RentalDto> save(@RequestBody RentalDto rentalDto) {
+    private ResponseEntity<?> save(@RequestBody RentalDto rentalDto) {
+
         try {
             return new ResponseEntity(iRentalService.save(rentalDto), HttpStatus.CREATED);
+        } catch (MethodPaymentToUserNotExistException methodPaymentToUserNotExistException) {
+
+            String errorMessage = "El medio de pago no existe en la cuenta de usuario";
+            ErrorResponse errorResponse = new ErrorResponse(errorMessage);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+
         } catch (ResponseStatusException e) {
             return ResponseEntity.badRequest().build();
         }

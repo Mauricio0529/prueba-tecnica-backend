@@ -1,7 +1,10 @@
 package com.gcatechnologies.services.implementations;
 
 import com.gcatechnologies.constants.StatusRentalConstants;
+import com.gcatechnologies.dto.MethodPaymentDto;
 import com.gcatechnologies.dto.RentalDto;
+import com.gcatechnologies.exceptions.MethodPaymentToUserNotExistException;
+import com.gcatechnologies.repositories.contracts.IMethodPaymentRepository;
 import com.gcatechnologies.repositories.contracts.IRentalRepository;
 import com.gcatechnologies.services.contracts.IRentalService;
 import lombok.RequiredArgsConstructor;
@@ -9,12 +12,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class RentalServiceImpl implements IRentalService {
 
     private final IRentalRepository iRentalRepository;
+    private final IMethodPaymentRepository iMethodPaymentRepository;
 
     @Override
     public List<RentalDto> getAll() {
@@ -42,6 +47,16 @@ public class RentalServiceImpl implements IRentalService {
     @Override
     public RentalDto save(RentalDto rentalDto) {
         String newStatus = StatusRentalConstants.OPEN;
+
+        List<MethodPaymentDto> optionalRentalDto = iMethodPaymentRepository.getByUserId(rentalDto.getUsersId())
+                    .stream()
+                    .filter(typeMethod -> typeMethod.getId() == rentalDto.getMethodPaymentId())
+                    .collect(Collectors.toList());
+
+        if(optionalRentalDto.isEmpty()) {
+            System.out.println("El medio de pago no existe en la cuenta de usuario");
+            throw new MethodPaymentToUserNotExistException();
+        }
         return iRentalRepository.save(rentalDto, newStatus);
     }
 

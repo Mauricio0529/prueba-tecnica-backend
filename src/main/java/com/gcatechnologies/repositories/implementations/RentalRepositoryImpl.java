@@ -2,7 +2,6 @@ package com.gcatechnologies.repositories.implementations;
 
 import com.gcatechnologies.constants.StatusRentalConstants;
 import com.gcatechnologies.dto.RentalDto;
-import com.gcatechnologies.dto.UsersDto;
 import com.gcatechnologies.entities.Rental;
 import com.gcatechnologies.repositories.contracts.IRentalRepository;
 import com.gcatechnologies.repositories.mapper.MapperRental;
@@ -39,7 +38,7 @@ public class RentalRepositoryImpl implements IRentalRepository {
 
     @Override
     public RentalDto save(RentalDto rentalDto, String newStatus) {
-
+        rentalDto.setDateStart(LocalDateTime.now());
         Rental rentalEntity = rentalRepositoryCrudJpa.save(mapperRental.toEntity(newStatusRental(rentalDto, newStatus)));
         return mapperRental.toDto(rentalEntity);
     }
