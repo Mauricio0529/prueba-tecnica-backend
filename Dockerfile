@@ -5,10 +5,10 @@ FROM openjdk:17
 WORKDIR /app
 
 # Copia el archivo JAR de la aplicación al contenedor
-COPY target/my-application.jar /app/my-application.jar
+COPY target/my-application.jar .
 
 # Expone el puerto en el que la aplicación está escuchando
 EXPOSE 8080
 
 # Comando para ejecutar la aplicación
-CMD ["java", "-jar", "/app/my-application.jar"]
+CMD ["java", "-jar", "my-application.jar"]
