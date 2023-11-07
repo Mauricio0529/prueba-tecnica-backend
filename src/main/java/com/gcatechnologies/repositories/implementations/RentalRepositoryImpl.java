@@ -5,7 +5,9 @@ import com.gcatechnologies.dto.RentalDto;
 import com.gcatechnologies.entities.Rental;
 import com.gcatechnologies.repositories.contracts.IRentalRepository;
 import com.gcatechnologies.repositories.mapper.MapperRental;
+import com.gcatechnologies.repositories.mapper.MapperVehicle;
 import com.gcatechnologies.repositoriesCrudJpa.RentalRepositoryCrudJpa;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -20,10 +22,12 @@ public class RentalRepositoryImpl implements IRentalRepository {
     private final RentalRepositoryCrudJpa rentalRepositoryCrudJpa;
 
     private final MapperRental mapperRental;
+    private final MapperVehicle mapperVehicle;
 
     @Override
     public List<RentalDto> getAll() {
-        return mapperRental.toDtoLis(rentalRepositoryCrudJpa.findAll());
+        List<Rental> rentalEntities = rentalRepositoryCrudJpa.findAll();
+        return mapperRental.toDtoLis(rentalEntities);
     }
 
     @Override
@@ -36,13 +40,35 @@ public class RentalRepositoryImpl implements IRentalRepository {
        return rentalRepositoryCrudJpa.findByUsersId(userId).map(mapperRental::toDto);
     }
 
+    @Transactional
     @Override
     public RentalDto save(RentalDto rentalDto, String newStatus) {
         rentalDto.setDateStart(LocalDateTime.now());
-        Rental rentalEntity = rentalRepositoryCrudJpa.save(mapperRental.toEntity(newStatusRental(rentalDto, newStatus)));
-        return mapperRental.toDto(rentalEntity);
+        rentalDto.setStatus(newStatusRental(rentalDto, newStatus).getStatus());
+
+        Rental rentalEntity = mapperRental.toEntity(rentalDto);
+
+        rentalEntity.getVehiclesList().forEach(vehicle -> vehicle.setRental(rentalEntity));
+
+        Long rentId = rentalRepositoryCrudJpa.save(rentalEntity).getId();
+
+        Rental rentalSaved = rentalRepositoryCrudJpa.findById(rentId).get();
+
+        //rentalSaved.getVehiclesList().forEach(vehicle -> vehicle.setRental(rentalSaved));
+
+        rentalSaved.getVehiclesList().forEach(vehicleDto -> vehicleDto.setRentalId(rentalSaved.getId()));
+
+        rentalRepositoryCrudJpa.save(rentalSaved);
+
+        return mapperRental.toDto(rentalSaved);
     }
 
+    /**
+     * Establecer el estado y validar la fecha de finalizacion si el estado es Cerrado
+     * @param rentalDto Alquiler a cambiar su estado
+     * @param newStatus Nuevo estado a establecer
+     * @return Objecto Alquiler con su nuevo estado
+     */
     private RentalDto newStatusRental(RentalDto rentalDto, String newStatus) {
         rentalDto.setStatus(newStatus);
         if (rentalDto.getStatus().equals(StatusRentalConstants.CLOSED)) {

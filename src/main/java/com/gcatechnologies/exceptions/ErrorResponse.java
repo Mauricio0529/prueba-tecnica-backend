@@ -2,6 +2,9 @@ package com.gcatechnologies.exceptions;
 
 import lombok.Getter;
 
+/**
+ * Mensaje de error response
+ */
 @Getter
 public class ErrorResponse {
 

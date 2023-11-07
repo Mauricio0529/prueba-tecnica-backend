@@ -48,15 +48,20 @@ public class RentalServiceImpl implements IRentalService {
     public RentalDto save(RentalDto rentalDto) {
         String newStatus = StatusRentalConstants.OPEN;
 
+        /**
+         * Filtramos por usuario.
+         * Comparamos el id del Objecto RentalDto de la variable medio de pago sea igual a los medios de pagos que tiene el usuario
+         */
         List<MethodPaymentDto> optionalRentalDto = iMethodPaymentRepository.getByUserId(rentalDto.getUsersId())
                     .stream()
                     .filter(typeMethod -> typeMethod.getId() == rentalDto.getMethodPaymentId())
                     .collect(Collectors.toList());
 
         if(optionalRentalDto.isEmpty()) {
-            System.out.println("El medio de pago no existe en la cuenta de usuario");
             throw new MethodPaymentToUserNotExistException();
         }
+
+        System.out.println("SERVICE " +rentalDto.getVehiclesList().size());
         return iRentalRepository.save(rentalDto, newStatus);
     }
 

@@ -17,5 +17,4 @@ public interface MapperRental {
     Rental toEntity(RentalDto rentalDto);
 
     List<RentalDto> toDtoLis(List<Rental> rentalEntityList);
-
 }

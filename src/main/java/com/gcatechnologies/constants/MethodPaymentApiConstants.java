@@ -1,5 +1,8 @@
 package com.gcatechnologies.constants;
 
+/**
+ * Api Constantes medio de pago
+ */
 public class MethodPaymentApiConstants {
 
     /** Method Payment controller api **/
@@ -8,8 +11,6 @@ public class MethodPaymentApiConstants {
     /** Constantes CRUD genéricas **/
     public static final String CREATE = CrudApiConstants.CREATE;
     public static final String LIST = CrudApiConstants.LIST;
-    public static final String UPDATE = CrudApiConstants.UPDATE;
-    public static final String DELETE = CrudApiConstants.DELETE;
 
     /**
      * Obtener Medios de pagos segun su id

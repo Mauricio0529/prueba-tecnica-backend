@@ -15,6 +15,9 @@ public interface IMethodPaymentService {
 
     MethodPaymentDto save(MethodPaymentDto methodPaymentDto);
 
+    /**
+     * BORRAR
+     */
     MethodPaymentDto saveNewMethodPaymentByUser(MethodPaymentDto methodPaymentDto);
 
     Optional<MethodPaymentDto> updateByUsers(MethodPaymentDto methodPaymentDto);

@@ -52,8 +52,5 @@ public class UsersRepositoryImpl implements IUsersRepository {
     @Override
     public void delete(Long userId) {
         usersRepositoryCrudJpa.deleteById(userId);
-        //Users users =  usersRepositoryCrudJpa.findById(userId).get();
-        //users.active(0);
-        //this.save(users);
     }
 }

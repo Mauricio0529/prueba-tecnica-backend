@@ -1,35 +1,28 @@
 package com.gcatechnologies.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-@Getter @Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
 public class RentalDto {
 
-    /**
-     * RESERVA
-     */
     private Long id;
     private Long usersId;
-    /**
-     metodo de pago que hizo el usuario
-     Texto
-     Objeto
-     */
+
     private Long methodPaymentId;
 
     private Double valueRental;
 
-    private String vehicle; // OBJECTO
+    // private String vehicle; // OBJECTO
 
     private LocalDateTime dateStart;
     private LocalDateTime dateFinalized;
 
     private String status;
+
+    private List<VehicleDto> vehiclesList;
 }

@@ -1,6 +1,7 @@
 package com.gcatechnologies.services.implementations;
 
 import com.gcatechnologies.dto.MethodPaymentDto;
+import com.gcatechnologies.exceptions.UsersNotExistException;
 import com.gcatechnologies.repositories.contracts.IMethodPaymentRepository;
 import com.gcatechnologies.services.contracts.IMethodPaymentService;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,6 @@ public class MethodPaymentServiceImpl implements IMethodPaymentService {
     public Optional<MethodPaymentDto> getById(Long methodPaymentId) {
         Optional<MethodPaymentDto> methodPaymentDtoOptional = iMethodPaymentRepository.getById(methodPaymentId);
         if(methodPaymentDtoOptional.isEmpty()) {
-            System.out.println("EMPTY");
             return Optional.empty();
         }
         return methodPaymentDtoOptional;
@@ -70,13 +70,16 @@ public class MethodPaymentServiceImpl implements IMethodPaymentService {
         List<MethodPaymentDto> methodPaymentDtoList = getByUserId(methodPaymentDto.getUsersId());
 
         if(methodPaymentDtoList.isEmpty()) {
-            throw new RuntimeException("Usuario no encontrado");
+            throw new UsersNotExistException();
         }
 
         if(methodPaymentDto.getTypePayment().equals(CONST_TYPE_PAYMENT_CASH)) {
             methodPaymentDto.setNumberCard(0);
         }
 
+        /**
+         * Validar que el numero de tarjeta no se modifique al momento de no ingresar un valor
+         */
         methodPaymentDtoList.stream()
                 .filter(typePayment -> typePayment.getId() == methodPaymentDto.getId())
                 .forEach(x -> {

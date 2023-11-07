@@ -20,7 +20,6 @@ public class UsersController {
 
     @GetMapping(UsersApiConstants.LIST)
     private ResponseEntity<List<UsersDto>> getAll() {
-        //return new ResponseEntity<List<UsersDto>>(iUsersService.getAll(), HttpStatus.OK);
         List<UsersDto> usersDtoList = iUsersService.getAll();
         try {
             if(usersDtoList.isEmpty()) {
@@ -47,9 +46,6 @@ public class UsersController {
         return new ResponseEntity(iUsersService.save(usersDto), HttpStatus.CREATED);
     }
 
-    /**
-     * BORRAR
-     */
     @PutMapping(UsersApiConstants.UPDATE)
     private ResponseEntity<UsersDto> update(@RequestBody UsersDto usersDto) {
         return ResponseEntity.of(iUsersService.update(usersDto));

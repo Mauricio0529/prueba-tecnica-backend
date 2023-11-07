@@ -49,12 +49,13 @@ public class RentalController {
         try {
             return new ResponseEntity(iRentalService.save(rentalDto), HttpStatus.CREATED);
         } catch (MethodPaymentToUserNotExistException methodPaymentToUserNotExistException) {
-
+            System.out.println("ERROR --- ");
             String errorMessage = "El medio de pago no existe en la cuenta de usuario";
             ErrorResponse errorResponse = new ErrorResponse(errorMessage);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
 
         } catch (ResponseStatusException e) {
+            System.out.println("ERROR 2 --- ");
             return ResponseEntity.badRequest().build();
         }
     }

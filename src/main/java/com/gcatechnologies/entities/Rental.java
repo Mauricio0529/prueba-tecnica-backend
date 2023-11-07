@@ -7,10 +7,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "rental")
-@Getter @Setter
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Rental {
@@ -27,8 +29,6 @@ public class Rental {
 
     private Double valueRental;
 
-    private String vehicle; // OBJECTO
-
     @Column(name = "date_start")
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime dateStart;
@@ -38,7 +38,6 @@ public class Rental {
     private LocalDateTime dateFinalized;
 
     private String status;
-    //private Vehicle vehicleEntity;
 
     @ManyToOne()
     @JoinColumn(name = "method_payment_Id", insertable = false, updatable = false)
@@ -47,4 +46,7 @@ public class Rental {
     @ManyToOne()
     @JoinColumn(name = "usersId", insertable = false, updatable = false)
     private Users users;
+
+    @OneToMany(mappedBy = "rental", cascade = {CascadeType.ALL})
+    private List<Vehicle> vehiclesList;
 }

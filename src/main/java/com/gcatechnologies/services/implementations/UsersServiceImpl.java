@@ -1,6 +1,7 @@
 package com.gcatechnologies.services.implementations;
 
 import com.gcatechnologies.dto.UsersDto;
+import com.gcatechnologies.exceptions.UserNameAlreadyExistsException;
 import com.gcatechnologies.repositories.contracts.IUsersRepository;
 import com.gcatechnologies.services.contracts.IUsersService;
 import lombok.RequiredArgsConstructor;
@@ -36,9 +37,9 @@ public class UsersServiceImpl implements IUsersService {
 
     @Override
     public UsersDto save(UsersDto usersDto) {
-        Optional<UsersDto> usersDtoOptional = getById(usersDto.getId());
+        Optional<UsersDto> usersDtoOptional = getByUserName(usersDto.getUsername());
         if(usersDtoOptional.isPresent()) {
-            return usersDto;
+            throw new UserNameAlreadyExistsException();
         }
         return iUsersRepository.save(usersDto);
     }
