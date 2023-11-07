@@ -61,7 +61,6 @@ public class RentalServiceImpl implements IRentalService {
             throw new MethodPaymentToUserNotExistException();
         }
 
-        System.out.println("SERVICE " +rentalDto.getVehiclesList().size());
         return iRentalRepository.save(rentalDto, newStatus);
     }
 

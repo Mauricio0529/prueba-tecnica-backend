@@ -2,6 +2,7 @@ package com.gcatechnologies.services.implementations;
 
 import com.gcatechnologies.dto.MethodPaymentDto;
 import com.gcatechnologies.exceptions.UsersNotExistException;
+import com.gcatechnologies.exceptions.ValidatedNumberCard;
 import com.gcatechnologies.repositories.contracts.IMethodPaymentRepository;
 import com.gcatechnologies.services.contracts.IMethodPaymentService;
 import lombok.RequiredArgsConstructor;
@@ -44,25 +45,14 @@ public class MethodPaymentServiceImpl implements IMethodPaymentService {
 
     @Override
     public MethodPaymentDto save(MethodPaymentDto methodPaymentDto) {
-        /*Optional<MethodPaymentDto> methodPaymentDtoOptional = getById(methodPaymentDto.getId());
-        if(methodPaymentDtoOptional.isPresent()) {
-            return methodPaymentDto;
-        }*/
-
-        if(methodPaymentDto.getNumberCard() == null) {
-            throw new RuntimeException("Pora favor ingrese el numero de la tarjeta");
-        }
 
         if(methodPaymentDto.getTypePayment().equals(CONST_TYPE_PAYMENT_CASH)) {
             methodPaymentDto.setNumberCard(0);
+        } else if(methodPaymentDto.getNumberCard() == null) {
+            throw new ValidatedNumberCard();
         }
 
         return iMethodPaymentRepository.save(methodPaymentDto);
-    }
-
-    @Override
-    public MethodPaymentDto saveNewMethodPaymentByUser(MethodPaymentDto methodPaymentDto) {
-        return null;
     }
 
     @Override
@@ -96,9 +86,7 @@ public class MethodPaymentServiceImpl implements IMethodPaymentService {
     }
 
     /**
-     * ESTAMOS ELIMINANDO 1 USUARIO DE UN METODO DE PAGO
-     * @param userId
-     * @return
+     * ELIMINAR UN METODO DE PAGO DE UN USUARIO
      */
     @Override
     public Boolean deleteByUser(Long methodPaymentId, Long userId) {
@@ -106,14 +94,12 @@ public class MethodPaymentServiceImpl implements IMethodPaymentService {
         if(methodPaymentDtoList.isEmpty()) {
             return false;
         }
-        int i = 0;
+
         for(MethodPaymentDto methodPayment: methodPaymentDtoList) {
-            System.out.println("La i -> " +i);
             if(methodPayment.getId() == methodPaymentId) {
                 iMethodPaymentRepository.deleteByUserId(methodPaymentId);
                 break;
             }
-            i++;
         }
         return true;
     }

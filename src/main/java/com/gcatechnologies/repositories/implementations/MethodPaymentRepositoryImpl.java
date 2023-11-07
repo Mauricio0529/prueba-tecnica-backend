@@ -40,15 +40,6 @@ public class MethodPaymentRepositoryImpl implements IMethodPaymentRepository {
         return mapperMethodPayment.toDto(methodPaymentEntity);
     }
 
-    /**
-     * BORRAR
-     */
-    @Override
-    public MethodPaymentDto saveNewMethodPaymentByUser(MethodPaymentDto methodPaymentDto) {
-        MethodPayment methodPaymentEntity = methodPaymentRepositoryCrudJpa.save(mapperMethodPayment.toEntity(methodPaymentDto));
-        return mapperMethodPayment.toDto(methodPaymentEntity);
-    }
-
     @Override
     public void deleteByUserId(Long methodPaymentId) {
         methodPaymentRepositoryCrudJpa.deleteById(methodPaymentId);

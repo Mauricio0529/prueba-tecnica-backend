@@ -48,13 +48,9 @@ public class RentalRepositoryImpl implements IRentalRepository {
 
         Rental rentalEntity = mapperRental.toEntity(rentalDto);
 
-        rentalEntity.getVehiclesList().forEach(vehicle -> vehicle.setRental(rentalEntity));
-
         Long rentId = rentalRepositoryCrudJpa.save(rentalEntity).getId();
 
         Rental rentalSaved = rentalRepositoryCrudJpa.findById(rentId).get();
-
-        //rentalSaved.getVehiclesList().forEach(vehicle -> vehicle.setRental(rentalSaved));
 
         rentalSaved.getVehiclesList().forEach(vehicleDto -> vehicleDto.setRentalId(rentalSaved.getId()));
 

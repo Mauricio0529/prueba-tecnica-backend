@@ -15,7 +15,5 @@ public interface IMethodPaymentRepository {
 
     MethodPaymentDto save(MethodPaymentDto methodPaymentDto);
 
-    MethodPaymentDto saveNewMethodPaymentByUser(MethodPaymentDto methodPaymentDto);
-
     void deleteByUserId(Long methodPaymentId);
 }

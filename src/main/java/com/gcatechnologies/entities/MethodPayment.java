@@ -21,15 +21,10 @@ public class MethodPayment {
     private Long usersId;
 
     private String typePayment;
+
     private Integer numberCard;
 
     @ManyToOne()
     @JoinColumn(name = "usersId", insertable = false, updatable = false)
     private Users users;
-
-    /*
-    @OneToMany(mappedBy = "methodPaymentEntity", cascade = {CascadeType.ALL})
-    private List<Rental> rentalList;
-    */
-
 }

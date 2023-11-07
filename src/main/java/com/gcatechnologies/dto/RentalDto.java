@@ -17,9 +17,8 @@ public class RentalDto {
 
     private Double valueRental;
 
-    // private String vehicle; // OBJECTO
-
     private LocalDateTime dateStart;
+
     private LocalDateTime dateFinalized;
 
     private String status;

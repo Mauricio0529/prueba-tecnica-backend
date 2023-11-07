@@ -2,7 +2,10 @@ package com.gcatechnologies.controllers;
 
 import com.gcatechnologies.constants.MethodPaymentApiConstants;
 import com.gcatechnologies.dto.MethodPaymentDto;
+import com.gcatechnologies.exceptions.ErrorResponse;
+import com.gcatechnologies.exceptions.ValidatedNumberCard;
 import com.gcatechnologies.services.contracts.IMethodPaymentService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,9 +45,13 @@ public class MethodPaymentController {
     }
 
     @PostMapping(MethodPaymentApiConstants.CREATE)
-    private ResponseEntity<MethodPaymentDto> save(@RequestBody MethodPaymentDto methodPaymentDto) {
+    private ResponseEntity<?> save(@Valid @RequestBody MethodPaymentDto methodPaymentDto) {
         try {
             return new ResponseEntity(iMethodPaymentService.save(methodPaymentDto), HttpStatus.CREATED);
+        } catch (ValidatedNumberCard validatedNumberCard) {
+            String errorMessage = "Por favor ingrese el numero de la tarjeta";
+            ErrorResponse errorResponse = new ErrorResponse(errorMessage);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         } catch (ResponseStatusException e) {
             return ResponseEntity.badRequest().build();
         }
