@@ -4,6 +4,10 @@ FROM openjdk:17
 # Directorio de trabajo en el contenedor
 WORKDIR /app
 
+RUN maven clean target
+
+FROM openjdk:17
+
 # Copia el archivo JAR de la aplicación al contenedor
 COPY target/my-application.jar .
 
@@ -11,4 +15,4 @@ COPY target/my-application.jar .
 EXPOSE 8080
 
 # Comando para ejecutar la aplicación
-CMD ["java", "-jar", "my-application.jar"]
+CMD ["java", "-jar", "/app/my-application.jar"]
