@@ -1,6 +1,7 @@
 package com.gcatechnologies.services.implementations;
 
 import com.gcatechnologies.dto.MethodPaymentDto;
+import com.gcatechnologies.entities.MethodPayment;
 import com.gcatechnologies.exceptions.UsersNotExistException;
 import com.gcatechnologies.exceptions.ValidatedNumberCard;
 import com.gcatechnologies.repositories.contracts.IMethodPaymentRepository;
@@ -48,7 +49,8 @@ public class MethodPaymentServiceImpl implements IMethodPaymentService {
 
         if(methodPaymentDto.getTypePayment().equals(CONST_TYPE_PAYMENT_CASH)) {
             methodPaymentDto.setNumberCard(0);
-        } else if(methodPaymentDto.getNumberCard() == null) {
+        }
+        if(methodPaymentDto.getNumberCard() == null) {
             throw new ValidatedNumberCard();
         }
 

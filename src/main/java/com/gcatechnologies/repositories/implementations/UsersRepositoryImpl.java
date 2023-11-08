@@ -1,5 +1,6 @@
 package com.gcatechnologies.repositories.implementations;
 
+import com.gcatechnologies.constants.StatusRentalConstants;
 import com.gcatechnologies.dto.UsersDto;
 import com.gcatechnologies.entities.Users;
 import com.gcatechnologies.repositories.contracts.IUsersRepository;
@@ -42,11 +43,20 @@ public class UsersRepositoryImpl implements IUsersRepository {
 
         usersEntity.setDateRegistration(LocalDateTime.now());
 
-        usersEntity.getMethodPaymentList().stream().forEach(methodPayment -> methodPayment.setUsers(usersEntity));
+        Long userId = usersRepositoryCrudJpa.save(usersEntity).getId();
 
-        usersRepositoryCrudJpa.save(usersEntity);
+        Users savedUsersEntity = usersRepositoryCrudJpa.findById(userId).get();
 
-        return mapperUsers.toUserDto(usersEntity);
+        savedUsersEntity.getMethodPaymentList().stream().forEach(methodPayment -> {
+            methodPayment.setUsersId(userId);
+            if (methodPayment.getTypePayment().equals(StatusRentalConstants.CLOSED)) {
+
+            }
+        });
+
+        usersRepositoryCrudJpa.save(savedUsersEntity);
+
+        return mapperUsers.toUserDto(savedUsersEntity);
     }
 
     @Override
