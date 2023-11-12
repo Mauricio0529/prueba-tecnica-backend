@@ -11,6 +11,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+import static org.hibernate.query.sqm.tree.SqmNode.log;
+
 @RestController
 @RequestMapping(path = VehicleApiConstants.VEHICLE_API_PREFIX)
 @RequiredArgsConstructor
@@ -23,11 +25,12 @@ public class VehicleController {
         List<VehicleDto> vehicleDtoList = iVehicleService.getAll();
         try {
             if(vehicleDtoList.isEmpty()) {
-                return ResponseEntity.noContent().build();
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
             }
             return ResponseEntity.ok(vehicleDtoList);
         } catch (ResponseStatusException e) {
-            return ResponseEntity.badRequest().build();
+            log.error("Error en la solicitud", e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
@@ -38,7 +41,7 @@ public class VehicleController {
 
     @PostMapping(VehicleApiConstants.CREATE)
     private ResponseEntity<VehicleDto> save(@RequestBody VehicleDto vehicleDto) {
-        return new ResponseEntity(iVehicleService.save(vehicleDto), HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(iVehicleService.save(vehicleDto));
     }
 
     @DeleteMapping(VehicleApiConstants.DELETE)

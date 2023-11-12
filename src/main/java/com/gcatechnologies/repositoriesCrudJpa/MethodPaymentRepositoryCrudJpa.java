@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface MethodPaymentRepositoryCrudJpa extends JpaRepository<MethodPayment, Long> {
     List<MethodPayment> findByUsersId(Long userId);
+    Integer countByNumberCard(Integer numberCard);
 }

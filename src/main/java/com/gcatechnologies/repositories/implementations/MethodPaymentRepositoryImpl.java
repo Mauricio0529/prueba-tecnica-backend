@@ -35,6 +35,11 @@ public class MethodPaymentRepositoryImpl implements IMethodPaymentRepository {
     }
 
     @Override
+    public Integer countByNumberCard(Integer numberCard) {
+        return methodPaymentRepositoryCrudJpa.countByNumberCard(numberCard);
+    }
+
+    @Override
     public MethodPaymentDto save(MethodPaymentDto methodPaymentDto) {
         MethodPayment methodPaymentEntity = methodPaymentRepositoryCrudJpa.save(mapperMethodPayment.toEntity(methodPaymentDto));
         return mapperMethodPayment.toDto(methodPaymentEntity);

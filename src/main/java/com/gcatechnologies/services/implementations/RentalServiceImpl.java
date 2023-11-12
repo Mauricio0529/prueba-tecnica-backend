@@ -53,9 +53,9 @@ public class RentalServiceImpl implements IRentalService {
          * Comparamos el id del Objecto RentalDto de la variable medio de pago sea igual a los medios de pagos que tiene el usuario
          */
         List<MethodPaymentDto> optionalRentalDto = iMethodPaymentRepository.getByUserId(rentalDto.getUsersId())
-                    .stream()
-                    .filter(typeMethod -> typeMethod.getId() == rentalDto.getMethodPaymentId())
-                    .collect(Collectors.toList());
+                .stream()
+                .filter(typeMethod -> typeMethod.getId() == rentalDto.getMethodPaymentId())
+                .collect(Collectors.toList());
 
         if(optionalRentalDto.isEmpty()) {
             throw new MethodPaymentToUserNotExistException();

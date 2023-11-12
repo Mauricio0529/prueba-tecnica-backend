@@ -47,12 +47,7 @@ public class UsersRepositoryImpl implements IUsersRepository {
 
         Users savedUsersEntity = usersRepositoryCrudJpa.findById(userId).get();
 
-        savedUsersEntity.getMethodPaymentList().stream().forEach(methodPayment -> {
-            methodPayment.setUsersId(userId);
-            if (methodPayment.getTypePayment().equals(StatusRentalConstants.CLOSED)) {
-
-            }
-        });
+        savedUsersEntity.getMethodPaymentList().stream().forEach(methodPayment -> methodPayment.setUsersId(userId));
 
         usersRepositoryCrudJpa.save(savedUsersEntity);
 

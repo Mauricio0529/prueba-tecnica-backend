@@ -13,6 +13,8 @@ public interface IMethodPaymentRepository {
 
     List<MethodPaymentDto> getByUserId(Long userId);
 
+    Integer countByNumberCard(Integer numberCard);
+
     MethodPaymentDto save(MethodPaymentDto methodPaymentDto);
 
     void deleteByUserId(Long methodPaymentId);

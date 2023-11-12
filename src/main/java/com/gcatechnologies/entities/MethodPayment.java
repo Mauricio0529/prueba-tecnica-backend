@@ -17,7 +17,6 @@ public class MethodPayment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "usersId")
     private Long usersId;
 
     private String typePayment;

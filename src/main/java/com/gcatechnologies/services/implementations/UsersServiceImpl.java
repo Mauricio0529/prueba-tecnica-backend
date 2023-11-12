@@ -1,7 +1,9 @@
 package com.gcatechnologies.services.implementations;
 
 import com.gcatechnologies.dto.UsersDto;
+import com.gcatechnologies.exceptions.NumberCardExistException;
 import com.gcatechnologies.exceptions.UserNameAlreadyExistsException;
+import com.gcatechnologies.repositories.contracts.IMethodPaymentRepository;
 import com.gcatechnologies.repositories.contracts.IUsersRepository;
 import com.gcatechnologies.services.contracts.IUsersService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import java.util.Optional;
 public class UsersServiceImpl implements IUsersService {
 
     private final IUsersRepository iUsersRepository;
+    private final IMethodPaymentRepository iMethodPaymentRepository;
 
     @Override
     public List<UsersDto> getAll() {
@@ -32,7 +35,11 @@ public class UsersServiceImpl implements IUsersService {
 
     @Override
     public Optional<UsersDto> getByUserName(String userName) {
-        return iUsersRepository.getByUserName(userName);
+        Optional<UsersDto> usersDtoOptional = iUsersRepository.getByUserName(userName);
+        if(usersDtoOptional.isEmpty()) {
+            return Optional.empty();
+        }
+        return usersDtoOptional;
     }
 
     @Override
@@ -41,6 +48,15 @@ public class UsersServiceImpl implements IUsersService {
         if(usersDtoOptional.isPresent()) {
             throw new UserNameAlreadyExistsException();
         }
+        /**
+         * VALIDAR QUE EL NUMERO DE LA TARJETA NO ESTE DUPLICADO
+         */
+        usersDto.getMethodPaymentList().stream().forEach(methodPayment -> {
+            Integer numberCardRepeated = iMethodPaymentRepository.countByNumberCard(methodPayment.getNumberCard());
+            if(numberCardRepeated != 0) {
+                throw new NumberCardExistException();
+            }
+        });
         return iUsersRepository.save(usersDto);
     }
 

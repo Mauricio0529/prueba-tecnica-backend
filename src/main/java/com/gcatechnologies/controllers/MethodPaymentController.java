@@ -3,6 +3,7 @@ package com.gcatechnologies.controllers;
 import com.gcatechnologies.constants.MethodPaymentApiConstants;
 import com.gcatechnologies.dto.MethodPaymentDto;
 import com.gcatechnologies.exceptions.ErrorResponse;
+import com.gcatechnologies.exceptions.NumberCardExistException;
 import com.gcatechnologies.exceptions.ValidatedNumberCard;
 import com.gcatechnologies.services.contracts.IMethodPaymentService;
 import jakarta.validation.Valid;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+
+import static org.hibernate.query.sqm.tree.SqmNode.log;
 
 @RestController
 @RequestMapping(path = MethodPaymentApiConstants.METHOD_PAYMENT_API_PREFIX)
@@ -26,11 +29,12 @@ public class MethodPaymentController {
         List<MethodPaymentDto> methodPaymentDtoList = iMethodPaymentService.getAll();
         try {
             if(methodPaymentDtoList == null) {
-                return ResponseEntity.noContent().build();
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
             }
             return ResponseEntity.ok(methodPaymentDtoList);
         } catch (ResponseStatusException e) {
-            return ResponseEntity.badRequest().build();
+            log.error("Error en la solicitud", e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
@@ -48,12 +52,22 @@ public class MethodPaymentController {
     private ResponseEntity<?> save(@Valid @RequestBody MethodPaymentDto methodPaymentDto) {
         try {
             return new ResponseEntity(iMethodPaymentService.save(methodPaymentDto), HttpStatus.CREATED);
+
         } catch (ValidatedNumberCard validatedNumberCard) {
             String errorMessage = "Por favor ingrese el numero de la tarjeta";
             ErrorResponse errorResponse = new ErrorResponse(errorMessage);
+            log.error(errorMessage, validatedNumberCard);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+
+        } catch (NumberCardExistException numberCardExistException) {
+            String errorMessage = "El numero de la tarjeta ya se encuentra registrada";
+            log.error(errorMessage, numberCardExistException);
+            ErrorResponse errorResponse = new ErrorResponse(errorMessage);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+
         } catch (ResponseStatusException e) {
-            return ResponseEntity.badRequest().build();
+            log.error("Error en la solicitud", e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 

@@ -13,6 +13,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+import static org.hibernate.query.sqm.tree.SqmNode.log;
+
 @RestController
 @RequestMapping(path = RentalApiConstants.RENTAL_API_PREFIX)
 @RequiredArgsConstructor
@@ -25,11 +27,11 @@ public class RentalController {
         List<RentalDto> rentalDtoList = iRentalService.getAll();
         try {
             if(rentalDtoList == null) {
-                return ResponseEntity.noContent().build();
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
             }
             return ResponseEntity.ok(rentalDtoList);
         } catch (ResponseStatusException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
@@ -47,14 +49,16 @@ public class RentalController {
     private ResponseEntity<?> save(@RequestBody RentalDto rentalDto) {
 
         try {
-            return new ResponseEntity(iRentalService.save(rentalDto), HttpStatus.CREATED);
+            return ResponseEntity.status(HttpStatus.CREATED).body(iRentalService.save(rentalDto));
         } catch (MethodPaymentToUserNotExistException methodPaymentToUserNotExistException) {
             String errorMessage = "El medio de pago no existe en la cuenta de usuario";
             ErrorResponse errorResponse = new ErrorResponse(errorMessage);
+            log.error(errorResponse, methodPaymentToUserNotExistException);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
 
         } catch (ResponseStatusException e) {
-            return ResponseEntity.badRequest().build();
+            log.error("Error en la solicitud", e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 

@@ -1,8 +1,7 @@
 package com.gcatechnologies.services.implementations;
 
 import com.gcatechnologies.dto.MethodPaymentDto;
-import com.gcatechnologies.entities.MethodPayment;
-import com.gcatechnologies.exceptions.UsersNotExistException;
+import com.gcatechnologies.exceptions.NumberCardExistException;
 import com.gcatechnologies.exceptions.ValidatedNumberCard;
 import com.gcatechnologies.repositories.contracts.IMethodPaymentRepository;
 import com.gcatechnologies.services.contracts.IMethodPaymentService;
@@ -47,12 +46,15 @@ public class MethodPaymentServiceImpl implements IMethodPaymentService {
     @Override
     public MethodPaymentDto save(MethodPaymentDto methodPaymentDto) {
 
-        if(methodPaymentDto.getTypePayment().equals(CONST_TYPE_PAYMENT_CASH)) {
-            methodPaymentDto.setNumberCard(0);
-        }
-        if(methodPaymentDto.getNumberCard() == null) {
-            throw new ValidatedNumberCard();
-        }
+        if(methodPaymentDto.getTypePayment().equals(CONST_TYPE_PAYMENT_CASH)) methodPaymentDto.setNumberCard(0);
+
+        /**
+         * Validamos si el numero de tarjeta ya se encuentra en la base de datos
+         */
+        Integer numberCardRepeated = iMethodPaymentRepository.countByNumberCard(methodPaymentDto.getNumberCard());
+        if(numberCardRepeated != 0) throw new NumberCardExistException();
+
+        if(methodPaymentDto.getNumberCard() == null) throw new ValidatedNumberCard();
 
         return iMethodPaymentRepository.save(methodPaymentDto);
     }
@@ -62,7 +64,7 @@ public class MethodPaymentServiceImpl implements IMethodPaymentService {
         List<MethodPaymentDto> methodPaymentDtoList = getByUserId(methodPaymentDto.getUsersId());
 
         if(methodPaymentDtoList.isEmpty()) {
-            throw new UsersNotExistException();
+            return Optional.empty();
         }
 
         if(methodPaymentDto.getTypePayment().equals(CONST_TYPE_PAYMENT_CASH)) {
@@ -71,6 +73,8 @@ public class MethodPaymentServiceImpl implements IMethodPaymentService {
 
         /**
          * Validar que el numero de tarjeta no se modifique al momento de no ingresar un valor
+         * filter: si el usuario tiene dos metodos de pago,
+         * se recorre y valida que sea el medio de pago ID se igual al del Dto ID
          */
         methodPaymentDtoList.stream()
                 .filter(typePayment -> typePayment.getId() == methodPaymentDto.getId())

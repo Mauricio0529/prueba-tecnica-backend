@@ -6,8 +6,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
-@Setter
+@Getter @Setter
 public class RentalDto {
 
     private Long id;
