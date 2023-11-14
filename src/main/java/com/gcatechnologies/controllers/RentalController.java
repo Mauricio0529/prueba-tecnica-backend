@@ -62,7 +62,7 @@ public class RentalController {
         }
     }
 
-    @PutMapping(RentalApiConstants.UPDATE_STATUS)
+    @PatchMapping(RentalApiConstants.UPDATE_STATUS)
     private ResponseEntity<RentalDto> updateStatus(@RequestParam Long rentalId, @RequestParam String newStatus) {
         return ResponseEntity.of(iRentalService.updateStatus(rentalId, newStatus));
     }
